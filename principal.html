@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+
+    <title>Principal</title>
+</head>
+
+<style>
+html{
+    background-color: #eaf4f8;
+}
+
+.card{
+    background-color: rgb(31, 145, 116);
+    padding: 13px;
+    margin: 30px;
+    width: 200px;
+}
+
+h1{
+    text-align: center;
+}
+</style>
+
+<body>
+    <div style="background-color: white; width: 80%; margin: 0 auto;">
+    <h1>Detalle diario de horas trabajadas</h1>
+
+    <table id="detalle" class="pure-table pure-table-bordered">
+        <thead>
+            <tr>
+                <th>Dia</th>
+                <th>Fecha</th>
+                <th>Hora de inicio</th>
+                <th>Hora de fin</th>
+                <th>Total de horas del día</th>
+                <th>Monto a facturar</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+
+    <h2>Resumen de facturación</h2>
+    <div style="display: flex; justify-content: center;">
+        <div class="card">
+            <h3>Total de horas trabajadas</h3>
+            <h1 id="totalHoras"></h1>
+        </div>
+
+        <div class="card">
+            <h3>Total a cobrar</h3>
+            <h1 id="montoTotal"></h1>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
+
+<script>
+  // Recuperamos el usuario activo
+  const usuarioActivo = JSON.parse(sessionStorage.getItem("usuarioActivo"));
+  const tbody = document.querySelector("#detalle tbody");
+
+  // Usando forEach recorremos los días del usuario para la creación de filas (tr) en la tabla con su información.
+    usuarioActivo.dias.forEach(dia => {
+      const fila = document.createElement("tr");
+      fila.innerHTML = `
+        <td>${dia.dia}</td>
+        <td>${dia.fecha}</td>
+        <td>${dia.hinicio}</td>
+        <td>${dia.hfin}</td>
+        <td>${dia.htotal}</td>
+        <td>S/${dia.monto}</td>
+      `;
+      tbody.appendChild(fila);
+    });
+
+    // Calculamos el total de horas trabajadas
+    const totalMinutos = usuarioActivo.dias.reduce((acum, dia) => {
+        
+    const [h, m] = dia.htotal.split(":").map(Number);
+    return acum + (h || 0) * 60 + (m || 0);
+    }, 0);
+
+    const horas = Math.floor(totalMinutos / 60);
+    const minutos = totalMinutos % 60;
+    document.getElementById("totalHoras").textContent = `${horas.toString().padStart(2, "0")}:${minutos.toString().padStart(2, "0")}`;
+
+    
+    // Calculamos el total a cobrar
+    const totalMonto = usuarioActivo.dias.reduce((acum, dia) => acum + Number(dia.monto), 0);
+    document.getElementById("montoTotal").textContent = totalMonto;
+
+</script>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+
+    <title>Iniciar Sesión</title>
+</head>
+
+<style> 
+    html{
+        background-color: #eaf4f8;
+    }
+
+    .formulario{
+        padding: 13px;
+        margin: 20px auto;
+        width: 500px;
+        background-color: rgb(138, 222, 255);
+    }
+</style>
+
+<body>
+    <div class="formulario">
+        <h1>Iniciar Sesión</h1>
+        <form class="pure-form">
+            <input id="usuario" type="text" placeholder="Usuario">
+            <input id="password" type="password" placeholder="Contraseña"><br><br>
+            <input class="pure-button" type="submit" value="Iniciar sesión">
+        </form>
+    </div>
+</body>
+
+<script type="module">
+
+// Importamos el array del usuario para trabajar en el proceso del login y la carga de información en la vista principal
+    import { usuarios } from './usuario.js';
+
+    const form = document.querySelector("form");
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const inputUsuario = document.getElementById("usuario").value;
+        const inputPassword = document.getElementById("password").value;
+
+        // Verificamos si el usuario existe y si la contraseña es correcta
+        const usuarioActivo = usuarios.find(u => u.usuario === inputUsuario && u.password === inputPassword);
+        if (usuarioActivo) {
+            // Guardamos el usuario activo usando sessionStorage para que esté disponible en la página principal
+            sessionStorage.setItem("usuarioActivo", JSON.stringify(usuarioActivo));
+            window.location.href = "principal.html";
+        } 
+        else {
+            alert("El usuario o la contraseña son incorrectos. Por favor, vuelve a intentarlo.");
+        }
+    });
+
+</script>
+
+</html>
